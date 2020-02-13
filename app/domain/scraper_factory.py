@@ -1,4 +1,14 @@
+from app.domain import get_site_name_from_package
+from app.domain.sites.tutby.scraper import TutbyScraper
+
+
 class ScraperFactory:
+    __INSTANCE = None
+    scrapers = {
+        get_site_name_from_package(scraper): scraper for scraper in [
+            TutbyScraper,
+        ]
+    }
 
     @classmethod
     def get_instance(cls):
@@ -13,4 +23,7 @@ class ScraperFactory:
             raise Exception("This class is a singleton! Use get_instance() class method to retrieve an instance")
 
     def get_scraper(self, site):
-        pass
+        if self.scrapers[site]:
+            return self.scrapers[site]()
+        else:
+            raise AttributeError("No such site")
