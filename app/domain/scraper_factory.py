@@ -1,4 +1,5 @@
 from app.domain import get_site_name_from_package
+from app.domain.sites.cnn.scraper import CNNScraper
 from app.domain.sites.tutby.scraper import TutbyScraper
 
 
@@ -7,6 +8,7 @@ class ScraperFactory:
     scrapers = {
         get_site_name_from_package(scraper): scraper for scraper in [
             TutbyScraper,
+            CNNScraper
         ]
     }
 

@@ -12,5 +12,5 @@ class AbstractStorage(ABC):
         pass
 
     @abstractmethod
-    def pagination(self, page, col_name):
+    def read(self, col):
         pass

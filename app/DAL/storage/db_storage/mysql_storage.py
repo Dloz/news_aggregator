@@ -20,7 +20,7 @@ class MysqlStorage(AbstractStorage):
     def store_many(self, models):
         pass
 
-    def pagination(self, page, col_name):
+    def __pagination(self, page, page_size, col_name):
         pass
 
     def cleanup(self, col_name):

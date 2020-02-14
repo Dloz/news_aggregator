@@ -15,6 +15,3 @@ class Worker:
     @abstractmethod
     async def work_async(self, link):
         pass
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.resource_fetcher.__exit__()

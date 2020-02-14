@@ -13,6 +13,7 @@ class CrawlerWorker(Worker):
         categories = self.crawler.fetch_categories(html)
         # set used to store unique links
         links = set()
+        print(f"Fetching links from {link}")
         for category in categories:
             page_links = self.crawler.fetch_article_page_links(self.resource_fetcher.fetch(category))
             links.update(page_links)
@@ -22,8 +23,9 @@ class CrawlerWorker(Worker):
         html = await self.resource_fetcher.fetch_async(link)
         categories = self.crawler.fetch_categories(html)
         tasks = []
+        print(f"Fetching links from {link}")
         for category in categories:
             tasks.append(asyncio.ensure_future(
-                self.crawler.fetch_article_page_links(self.resource_fetcher.fetch_async(category))))
+                self.crawler.fetch_article_page_links(await self.resource_fetcher.fetch_async(category))))
         links = await asyncio.gather(*tasks)
         return list(set(links))  # remove duplicates

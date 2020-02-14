@@ -17,19 +17,24 @@ class MongoStorage(AbstractStorage):
         col = self.db[col_name]
         col.insert_many(model.to_dict() for model in models)
 
-    def pagination(self, page, col_name, page_size=5, from_date=None, to_date=None):  # todo: remove page_size hardcode
+    def read(self, column, limit=None, from_date=None, to_date=None, page=None, page_size=None):
+        if not list(self.db[column].find({})):
+            raise AttributeError(f"Data in column {column} was not found")
+        return self.__get_data(column, from_date, to_date, page, page_size, limit)
+
+    def __pagination(self, page, column, page_size, from_date=None, to_date=None):
         """returns a set of documents belonging to page number `page`
         where size of each page is `page_size`.
         """
         date_query = {'datePublished': {'$lt': to_date, '$gte': from_date}}
-        date_sort_query = [("date", -1)]
+        date_sort_query = [("datePublished", -1)]
         # Calculate number of documents to skip
         skips = page_size * (page - 1)
         if from_date and to_date:
-            cursor = self.db[col_name].find(date_query).sort(date_sort_query).skip(skips).limit(page_size)
+            cursor = self.db[column].find(date_query).sort(date_sort_query).skip(skips).limit(page_size)
         else:
             # Skip and limit
-            cursor = self.db[col_name].find().sort(date_sort_query).skip(skips).limit(page_size)
+            cursor = self.db[column].find().sort(date_sort_query).skip(skips).limit(page_size)
         data = []
         for x in cursor:
             x["_id"] = str(x["_id"])
@@ -37,10 +42,15 @@ class MongoStorage(AbstractStorage):
         # Return documents
         return data
 
-    def read(self, column, limit=None, from_date=None, to_date=None):
+    def __get_data(self, column, from_date=None, to_date=None, page=None, page_size=None, limit=None):
         date_query = {'datePublished': {'$lt': to_date, '$gte': from_date}}
         date_sort_query = [("datePublished", -1)]
-        try:
+
+        # read page by page
+        if page and page_size:
+            return self.__pagination(page=page, page_size=page_size, column=column, from_date=from_date, to_date=to_date)
+        # read whole data
+        else:
             if limit is None:
                 if from_date and to_date:
                     data = list(self.db[column].find(date_query).sort(date_sort_query))
@@ -64,9 +74,6 @@ class MongoStorage(AbstractStorage):
                 for d in data:
                     d["_id"] = str(d["_id"])
                 return data
-        except KeyError:
-            print("Column provided was not found")
-            raise
 
     def cleanup(self, col_name):
         self.db[col_name].delete_many({})

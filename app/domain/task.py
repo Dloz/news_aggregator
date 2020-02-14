@@ -27,10 +27,10 @@ class Task:
             self.__run_sync()
 
     def __run_sync(self):
-        with self.scraper_worker:
-            links = self.crawler_worker.work(self.start_link)
-            articles = [self.scraper_worker.work(link) for link in links]
-            self.article_storage.save_many(articles)
+        links = self.crawler_worker.work(self.start_link)
+        self.link_storage.save_many(links, self.site)
+        articles = [self.scraper_worker.work(link) for link in links]
+        self.article_storage.save_many(articles)
 
     def __run_async(self):
         loop = asyncio.get_event_loop()
@@ -40,8 +40,8 @@ class Task:
 
     async def __work_links(self, links):
         if links:
-            with self.scraper_worker:
-                tasks = [asyncio.ensure_future(self.scraper_worker.work_async(link)) for link in links]
-                return await asyncio.gather(*tasks)
+            tasks = [asyncio.ensure_future(self.scraper_worker.work_async(link)) for link in links]
+            result = await asyncio.gather(*tasks)
+            return [article for article in result if article]
         else:
             return None

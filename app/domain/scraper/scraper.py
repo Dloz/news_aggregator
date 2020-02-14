@@ -4,5 +4,5 @@ from abc import ABC, abstractmethod
 class Scraper(ABC):
 
     @abstractmethod
-    def scrape(self, html, link):
+    def scrape(self, html):
         pass
