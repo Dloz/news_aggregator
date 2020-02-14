@@ -1,3 +1,4 @@
+import dateutil.parser
 from bs4 import BeautifulSoup
 
 from app.domain.scraper.scraper import Scraper
@@ -6,19 +7,34 @@ from app.domain.scraper.scraper import Scraper
 class TutbyScraper(Scraper):
     SITE_NAME = "tutby"
 
-    def scrape(self, html, link):
+    def scrape(self, html):
         soup = BeautifulSoup(html, "html.parser")
-        text = self.__get_text(soup)
-        title = self.__get_title(soup)
         return {
-            "title": title,
-            "text": text,
-            "link": link,
-            "site": self.SITE_NAME
+            "title": self.__get_title(soup),
+            "text": self.__get_text(soup),
+            "site": self.SITE_NAME,
+            "date": self.__get_date(soup)
         }
 
     def __get_title(self, soup):
-        return soup.select_one('div.m_header h1').text
+        if soup:
+            return soup.select_one('div.m_header h1').text
+        else:
+            return None
 
     def __get_text(self, soup):
-        return '\n'.join([i.text for i in soup.select('div#article_body p')])
+        if soup:
+            return '\n'.join([i.text for i in soup.select('div#article_body p')])
+        else:
+            return None
+
+    def __get_date(self, soup):
+        if soup:
+            date_string = None
+            try:
+                date_string = soup.select_one('time[itemprop="datePublished"]')["datetime"]
+            except TypeError:
+                return None
+            return dateutil.parser.parse(date_string)
+        else:
+            return None

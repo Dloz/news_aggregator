@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app.DAL.models import Article
 
 
@@ -19,5 +21,11 @@ class ArticleStorage:
         else:
             raise AttributeError("Wrong data")
 
-    def read(self, limit=None):
-        return self.storage.read(self.COLUMN_NAME, limit)
+    def pagination(self, page):
+        if page:
+            return self.storage.pagination(page=page, col_name=self.COLUMN_NAME)
+        else:
+            raise AttributeError("Wrong page")
+
+    def read(self, from_date, to_date=datetime.utcnow(), limit=None):
+        return self.storage.read(column=self.COLUMN_NAME, limit=limit, from_date=from_date, to_date=to_date)

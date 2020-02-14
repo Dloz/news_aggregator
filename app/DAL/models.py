@@ -1,6 +1,3 @@
-import json
-
-
 class Article:
     """
     Represents article content
@@ -9,22 +6,28 @@ class Article:
     # (for SQL databases - Table, for NoSQl - column, key-value etc.)
     MODEL_STORAGE_NAME = 'article'
 
-    def __init__(self, site, title, text, link):
+    def __init__(self, site, title, text, link, date):
         self.site = site
         self.title = title
         self.text = text
         self.link = link
+        self.date = date
 
     @staticmethod
     def from_dict(article):
-        return Article(site=article["site"], title=article["title"], text=article["text"], link=article["link"])
+        return Article(site=article["site"],
+                       title=article["title"],
+                       text=article["text"],
+                       link=article["link"],
+                       date=article["date"])
 
     def to_dict(self):
         return {
             "site": self.site,
             "title": self.title,
             "text": self.text,
-            "link": self.link
+            "link": self.link,
+            "datePublished": self.date
         }
 
 

@@ -5,6 +5,9 @@ from requests import RequestException
 
 
 class HTTPFetcher:
+    def __init__(self):
+        self.session = aiohttp.ClientSession()
+
     def fetch(self, link):
         if link:
             response = None
@@ -28,10 +31,6 @@ class HTTPFetcher:
                 print("ClientError!")
         else:
             raise AttributeError("Link were not provided")
-
-    def __enter__(self):
-        self.session = aiohttp.ClientSession()
-        return self
 
     def __exit__(self):
         self.session.close()

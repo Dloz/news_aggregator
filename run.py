@@ -10,6 +10,6 @@ if __name__ == '__main__':
         raise AttributeError("Wrong config!")
     task = Task(site="tutby", start_link=site_config["tutby"])
     start = time.time()
-    task.run_async()
+    task.run()
     end = time.time()
     print("Async time: ", end - start)

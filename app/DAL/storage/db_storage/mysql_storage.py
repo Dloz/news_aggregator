@@ -4,6 +4,7 @@ from app.DAL.storage.abstract_storage import AbstractStorage
 
 
 class MysqlStorage(AbstractStorage):
+
     def __init__(self, storage_config):
         self.db = mysql.connector.connect(
             host=storage_config.host,
@@ -17,6 +18,9 @@ class MysqlStorage(AbstractStorage):
         pass
 
     def store_many(self, models):
+        pass
+
+    def pagination(self, page, col_name):
         pass
 
     def cleanup(self, col_name):
