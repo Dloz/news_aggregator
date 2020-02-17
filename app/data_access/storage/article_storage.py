@@ -13,13 +13,13 @@ class ArticleStorage:
         if article:
             self.storage.store(Article.from_dict(article))
         else:
-            raise AttributeError("Wrong data")
+            raise ValueError("Wrong data")
 
     def save_many(self, articles):
         if articles:
             self.storage.store_many([Article.from_dict(article) for article in articles])
         else:
-            raise AttributeError("Wrong data")
+            raise ValueError("Wrong data")
 
     def read(self, from_date, to_date=None, page=None, page_size=None, site=None):
         # Handle cases when None passed explicitly

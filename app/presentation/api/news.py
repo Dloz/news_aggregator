@@ -3,6 +3,7 @@ from flask import jsonify, request
 
 from app.data_access import article_storage
 from app.presentation.api import api as api_bp
+from app.presentation.api.errors import bad_request
 
 
 @api_bp.route('/news')
@@ -12,11 +13,12 @@ def get_news(site=None):
     page_size = app.config["NEWS_PER_PAGE"]
     from_param = request.args.get('from')
     to_param = request.args.get('to')
-    page = None
-    try:
-        page = int(request.args.get('p'))
-    except TypeError:
-        pass
+    page = request.args.get('p')
+    if page:
+        try:
+            page = int(page)
+        except ValueError:
+            return bad_request("Page parameter is in wrong format. Check if it is a number.")
     from_date = None
     to_date = None
     if from_param:

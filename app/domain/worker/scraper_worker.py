@@ -17,8 +17,7 @@ class ScraperWorker(Worker):
             data["link"] = link
             return data
         else:
-            pass
-            #raise Exception("html was not fetched")
+            print("HTML was not fetched")
 
     async def work_async(self, link):
         html = None
