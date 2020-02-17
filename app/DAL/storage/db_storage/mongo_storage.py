@@ -13,25 +13,27 @@ class MongoStorage(AbstractStorage):
 
     def store_many(self, models):
         col_name = models[0].MODEL_STORAGE_NAME
-        self.cleanup(col_name)
+        # self.cleanup(col_name)
         col = self.db[col_name]
         col.insert_many(model.to_dict() for model in models)
 
-    def read(self, column, limit=None, from_date=None, to_date=None, page=None, page_size=None):
+    def read(self, column, limit=None, from_date=None, to_date=None, page=None, page_size=None, site=None):
         if not list(self.db[column].find({})):
             raise AttributeError(f"Data in column {column} was not found")
-        return self.__get_data(column, from_date, to_date, page, page_size, limit)
+        return self.__get_data(column, from_date, to_date, page, page_size, limit, site=site)
 
-    def __pagination(self, page, column, page_size, from_date=None, to_date=None):
+    def __pagination(self, page, column, page_size, from_date=None, to_date=None, site=None):
         """returns a set of documents belonging to page number `page`
         where size of each page is `page_size`.
         """
-        date_query = {'datePublished': {'$lt': to_date, '$gte': from_date}}
+        find_query = {'datePublished': {'$lt': to_date, '$gte': from_date}}
+        if site:
+            find_query = {'datePublished': {'$lt': to_date, '$gte': from_date}, 'site': site}
         date_sort_query = [("datePublished", -1)]
         # Calculate number of documents to skip
         skips = page_size * (page - 1)
         if from_date and to_date:
-            cursor = self.db[column].find(date_query).sort(date_sort_query).skip(skips).limit(page_size)
+            cursor = self.db[column].find(find_query).sort(date_sort_query).skip(skips).limit(page_size)
         else:
             # Skip and limit
             cursor = self.db[column].find().sort(date_sort_query).skip(skips).limit(page_size)
@@ -42,18 +44,21 @@ class MongoStorage(AbstractStorage):
         # Return documents
         return data
 
-    def __get_data(self, column, from_date=None, to_date=None, page=None, page_size=None, limit=None):
-        date_query = {'datePublished': {'$lt': to_date, '$gte': from_date}}
+    def __get_data(self, column, from_date=None, to_date=None, page=None, page_size=None, limit=None, site=None):
+        find_query = {'datePublished': {'$lt': to_date, '$gte': from_date}}  # todo:
+        if site:
+            find_query = {'datePublished': {'$lt': to_date, '$gte': from_date}, 'site': site}
         date_sort_query = [("datePublished", -1)]
 
         # read page by page
         if page and page_size:
-            return self.__pagination(page=page, page_size=page_size, column=column, from_date=from_date, to_date=to_date)
+            return self.__pagination(page=page, page_size=page_size, column=column, from_date=from_date,
+                                     to_date=to_date, site=site)
         # read whole data
         else:
             if limit is None:
                 if from_date and to_date:
-                    data = list(self.db[column].find(date_query).sort(date_sort_query))
+                    data = list(self.db[column].find(find_query).sort(date_sort_query))
                 else:
                     data = list(self.db[column].find().sort(date_sort_query))
                 for d in data:
@@ -61,14 +66,14 @@ class MongoStorage(AbstractStorage):
                 return data
             elif limit == 1:
                 if from_date and to_date:
-                    data = self.db[column].find_one(date_query)
+                    data = self.db[column].find_one(find_query)
                 else:
                     data = self.db[column].find_one()
                 data["_id"] = str(data["_id"])
                 return data
             else:
                 if from_date and to_date:
-                    data = list(self.db[column].find(date_query))
+                    data = list(self.db[column].find(find_query))
                 else:
                     data = list(self.db[column].find().limit(limit))
                 for d in data:
