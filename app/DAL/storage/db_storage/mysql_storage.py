@@ -4,7 +4,6 @@ from app.DAL.storage.abstract_storage import AbstractStorage
 
 
 class MysqlStorage(AbstractStorage):
-
     def __init__(self, storage_config):
         self.db = mysql.connector.connect(
             host=storage_config.host,
@@ -13,6 +12,9 @@ class MysqlStorage(AbstractStorage):
             password=storage_config.password,
             database=storage_config.database
         )
+
+    def read(self, col):
+        pass
 
     def store(self, model):
         pass
