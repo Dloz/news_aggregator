@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pymongo
 
-from app.DAL.storage.abstract_storage import AbstractStorage
+from app.data_access.storage.abstract_storage import AbstractStorage
 
 
 class MongoStorage(AbstractStorage):

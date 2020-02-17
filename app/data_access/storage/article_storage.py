@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.DAL.models import Article
+from app.data_access.models import Article
 
 
 class ArticleStorage:

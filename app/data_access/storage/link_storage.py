@@ -1,4 +1,4 @@
-from app.DAL.models import Link
+from app.data_access.models import Link
 
 
 class LinkStorage:

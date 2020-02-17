@@ -1,4 +1,4 @@
-from app.DAL import StorageFactory
+from app.data_access import StorageFactory
 from app.domain import get_site_name_from_package
 from app.domain.sites.cnn.crawler import CNNCrawler
 from app.domain.sites.tutby.crawler import TutbyCrawler

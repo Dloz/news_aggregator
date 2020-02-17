@@ -1,6 +1,6 @@
 import asyncio
 
-from app.DAL import StorageFactory
+from app.data_access import StorageFactory
 from app.domain.crawler_factory import CrawlerFactory
 from app.domain.resource_fetcher.http_fetcher import HTTPFetcher
 from app.domain.scraper_factory import ScraperFactory
