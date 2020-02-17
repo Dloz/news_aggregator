@@ -10,7 +10,7 @@ Storages = namedtuple("Storages", ['article_storage', 'link_storage'])
 
 class StorageFactory:
     __INSTANCE = None
-    storages = {
+    storages = {  # todo: get storage name from package name
         "mongodb": MongoStorage,
     }
 

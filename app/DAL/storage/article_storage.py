@@ -21,12 +21,11 @@ class ArticleStorage:
         else:
             raise AttributeError("Wrong data")
 
-    def read(self, from_date, to_date=None, limit=None, page=None, page_size=None, site=None):
+    def read(self, from_date, to_date=None, page=None, page_size=None, site=None):
         # Handle cases when None passed explicitly
         if to_date is None:
             to_date = datetime.utcnow()
         data = self.storage.read(column=self.COLUMN_NAME,
-                                 limit=limit,
                                  from_date=from_date,
                                  to_date=to_date,
                                  page=page,

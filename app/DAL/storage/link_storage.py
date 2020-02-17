@@ -19,5 +19,5 @@ class LinkStorage:
         else:
             raise AttributeError("Wrong data")
 
-    def read(self, limit=None):
-        return self.storage.read(self.COLUMN_NAME, limit)
+    def read(self):
+        return self.storage.read(self.COLUMN_NAME)
