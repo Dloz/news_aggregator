@@ -30,4 +30,4 @@ class CrawlerFactory:
         if self.crawlers[site]:
             return self.crawlers[site]()
         else:
-            raise AttributeError("No such site")
+            raise ValueError("No such site")

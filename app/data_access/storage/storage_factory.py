@@ -33,4 +33,4 @@ class StorageFactory:
         if self.storages[storage_config.engine]:
             return Storages(ArticleStorage(storage), LinkStorage(storage))
         else:
-            raise AttributeError("No such storage")
+            raise ValueError("No such storage")

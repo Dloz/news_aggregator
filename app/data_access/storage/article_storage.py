@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import logging
 from app.data_access.models import Article
 
 
@@ -34,4 +34,4 @@ class ArticleStorage:
         if data:
             return data
         else:
-            print("No data")
+            logging.info(f"No data at {self.COLUMN_NAME} column/table")

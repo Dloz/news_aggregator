@@ -21,7 +21,7 @@ class MongoStorage(AbstractStorage):
 
     def read(self, column, from_date=None, to_date=None, page=None, page_size=None, site=None):
         if not list(self.db[column].find({})):
-            raise AttributeError(f"Data in column {column} was not found")
+            raise ValueError(f"Data in column {column} was not found")
         return self.__get_data(column, from_date=from_date, to_date=to_date, page=page, page_size=page_size, site=site)
 
     def __pagination(self, page, column, page_size, find_query, sort_query):
