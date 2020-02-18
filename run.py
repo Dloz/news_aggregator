@@ -4,7 +4,7 @@ import time
 
 from app.domain.task import Task
 
-LOG_FILE_PATH = '/home/INTEXSOFT/dmitry.lozovik/PycharmProjects/news_agregator/news.log'
+LOG_FILE_PATH = '/home/INTEXSOFT/dmitry.lozovik/PycharmProjects/news_aggregator/news.log'
 
 if __name__ == '__main__':
     from config import site_config
