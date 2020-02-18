@@ -1,4 +1,4 @@
-from app.DAL import StorageFactory
+from app.data_access.storage.storage_factory import StorageFactory
 from app.domain import get_site_name_from_package
 from app.domain.sites.cnn.crawler import CNNCrawler
 from app.domain.sites.tutby.crawler import TutbyCrawler
@@ -30,4 +30,4 @@ class CrawlerFactory:
         if self.crawlers[site]:
             return self.crawlers[site]()
         else:
-            raise AttributeError("No such site")
+            raise ValueError("No such site")

@@ -1,3 +1,5 @@
+import logging
+
 import aiohttp
 import requests
 from aiohttp import ClientError
@@ -12,13 +14,13 @@ class HTTPFetcher:
             try:
                 response = requests.get(link)
             except RequestException:
-                print("RequestException")
+                logging.exception(f"{link} request exception")
             if response and response.status_code == 200:
                 return response.text
             else:
-                print("Response failure")
+                logging.exception(f"Response from {link} failure")
         else:
-            pass
+            raise ValueError("Link were not provided")
 
     async def fetch_async(self, link):
         if link:
@@ -27,6 +29,6 @@ class HTTPFetcher:
                     response = await session.get(link)
                     return await response.text()
             except ClientError:
-                print("ClientError!")
+                logging.exception(f"ClientError at {link}")
         else:
-            raise AttributeError("Link were not provided")
+            raise ValueError("Link were not provided")

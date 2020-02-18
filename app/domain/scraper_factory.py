@@ -28,4 +28,4 @@ class ScraperFactory:
         if self.scrapers[site]:
             return self.scrapers[site]()
         else:
-            raise AttributeError("No such site")
+            raise ValueError("No such site")

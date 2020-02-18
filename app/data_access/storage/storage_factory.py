@@ -1,8 +1,8 @@
 from collections import namedtuple
 
-from app.DAL.storage.article_storage import ArticleStorage
-from app.DAL.storage.db_storage.mongo_storage import MongoStorage
-from app.DAL.storage.link_storage import LinkStorage
+from app.data_access.storage.article_storage import ArticleStorage
+from app.data_access.storage.db_storage.mongo_storage import MongoStorage
+from app.data_access.storage.link_storage import LinkStorage
 from config import storage_config
 
 Storages = namedtuple("Storages", ['article_storage', 'link_storage'])
@@ -33,4 +33,4 @@ class StorageFactory:
         if self.storages[storage_config.engine]:
             return Storages(ArticleStorage(storage), LinkStorage(storage))
         else:
-            raise AttributeError("No such storage")
+            raise ValueError("No such storage")

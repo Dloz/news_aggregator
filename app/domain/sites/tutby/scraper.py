@@ -18,7 +18,11 @@ class TutbyScraper(Scraper):
 
     def __get_title(self, soup):
         if soup:
-            return soup.select_one('div.m_header h1').text
+            headline = soup.select_one('h1[itemprop="headline"]')
+            if headline:
+                return headline.text
+            else:
+                return None
         else:
             return None
 

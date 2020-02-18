@@ -1,4 +1,4 @@
-from app.DAL.models import Link
+from app.data_access.models import Link
 
 
 class LinkStorage:
@@ -11,13 +11,13 @@ class LinkStorage:
         if site and link:
             self.storage.store(Link(site=site, link=link))
         else:
-            raise AttributeError("Wrong data")
+            raise ValueError("Wrong data")
 
     def save_many(self, links, site):
         if links and site:
             self.storage.store_many([Link(site=site, link=link) for link in links])
         else:
-            raise AttributeError("Wrong data")
+            raise ValueError("Wrong data")
 
     def read(self):
         return self.storage.read(self.COLUMN_NAME)
