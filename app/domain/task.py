@@ -1,7 +1,9 @@
 import asyncio
 
 from app.data_access.storage.storage_factory import StorageFactory
+from app.domain.consumer import Consumer
 from app.domain.crawler_factory import CrawlerFactory
+from app.domain.producer import Producer
 from app.domain.resource_fetcher.http_fetcher import HTTPFetcher
 from app.domain.scraper_factory import ScraperFactory
 from app.domain.worker.crawler_worker import CrawlerWorker
@@ -34,9 +36,21 @@ class Task:
 
     def __run_async(self):
         loop = asyncio.get_event_loop()
-        links = self.crawler_worker.work(self.start_link)
+        links = loop.run_until_complete(asyncio.ensure_future(self.crawler_worker.work_async(self.start_link)))
         results = loop.run_until_complete(asyncio.ensure_future(self.__work_links(links)))
         self.article_storage.save_many(articles=results)
+
+    async def run_async(self):
+        queue = asyncio.Queue()
+        consumer = Consumer(queue, self.scraper_worker)
+        producer = Producer(queue, self.crawler_worker)
+        await asyncio.gather(asyncio.ensure_future(producer.produce(self.start_link)))
+        consume = asyncio.ensure_future(consumer.consume())
+
+        # wait for the remaining tasks to be processed
+        await queue.join()
+
+        consume.cancel()
 
     async def __work_links(self, links):
         if links:

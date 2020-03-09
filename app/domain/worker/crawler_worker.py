@@ -27,7 +27,7 @@ class CrawlerWorker(Worker):
         for category in categories:
             tasks.append(asyncio.ensure_future(self.resource_fetcher.fetch_async(category)))
         links = await asyncio.gather(*tasks)
-        output = set()
+        output = set()  # prevent duplicates
         for link in links:
             output.update(self.crawler.fetch_article_page_links(link))
-        return list(output)  # remove duplicates
+        return list(output)
