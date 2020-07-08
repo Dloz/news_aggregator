@@ -5,7 +5,7 @@ import time
 
 from app.domain.task import Task
 
-LOG_FILE_PATH = '/home/INTEXSOFT/dmitry.lozovik/PycharmProjects/news_aggregator/news.log'
+LOG_FILE_PATH = './news.log'
 
 
 def work_site(site):
